@@ -13,12 +13,14 @@ function Login(props) {
         method: "POST",
         url:"/token",
         data:{
-          email: "test",
-          password: "test"
+          email: loginForm.email,
+          password: loginForm.password
          }
       })
       .then((response) => {
         props.setToken(response.data.access_token)
+        // Save the user_id in local storage
+        localStorage.setItem('user_id', response.data.user_id);
       }).catch((error) => {
         if (error.response) {
           console.log(error.response)
