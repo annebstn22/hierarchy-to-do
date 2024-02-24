@@ -83,14 +83,68 @@ def logout():
 @jwt_required()
 def tasks():
     
-    {"tasks": ["task1", "task2", "task3"]}
+    response = {
+        "users": [
+            {"user_id": 1,
+             "email": "user@example.com",
+             "password": "hashedpassword"
+             }
+        ],
+        "lists": [
+            {"list_id": 1,
+             "list_name": "CS162",
+             "user_id": 1
+             },
+            {"list_id": 2,
+             "list_name": "CS113",
+             "user_id": 1
+            }
+        ],
+        "tasks": [
+            {"task_id": 1,
+             "task_title": "To do list app",
+             "done": False,
+             "list_id": 1,
+             "parent_task_id": None},
+            {"task_id": 2,
+             "task_title": "Assignment 1",
+             "done": False,
+             "list_id": 1,
+             "parent_task_id": 1},
+            {"task_id": 3,
+             "task_title": "Read Chapter 1",
+             "done": False,
+             "list_id": 1,
+             "parent_task_id": 2},
+            {"task_id": 4,
+             "task_title": "Assignment 2",
+             "done": True,
+             "list_id": 1,
+             "parent_task_id": 1},
+            {"task_id": 5,
+             "task_title": "CS113 Lecture",
+             "done": False,
+             "list_id": 2,
+             "parent_task_id": None},
+            {"task_id": 6,
+             "task_title": "Lab Exercise",
+             "done": False,
+             "list_id": 2,
+             "parent_task_id": 5},
+            {"task_id": 7,
+             "task_title": "Homework",
+             "done": False,
+             "list_id": 2,
+             "parent_task_id": 5}
+        ]
+        }
     response_body = {
         "tasks": [
             "Finish authentication", 
             "Add task page", 
             "Add hierarchy"]   
     }
-    return response_body
+    return response
 
 
 @app.route("/profile")
