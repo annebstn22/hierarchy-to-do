@@ -2,6 +2,7 @@
 import os
 import json
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from datetime import datetime, timedelta, timezone
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
                                unset_jwt_cookies, jwt_required, JWTManager
@@ -10,6 +11,7 @@ from flask_jwt_extended import JWTManager
 
 # Create app instance
 app = Flask(__name__)
+CORS(app)
 
 # Setup the Flask-JWT-Extended extension
 #app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')  # Change this!
@@ -42,15 +44,6 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
 
-
-# Test fetching a token
-@app.route("/test", methods=["GET"])
-def test_create_token():
-    try:
-        access_token = create_access_token(identity="test")
-        return {"access_token": access_token}
-    except Exception as e:
-        return {"error": str(e)}
 
 # CHANGE TO COMPARE WITH DATA IN DATABASE
 # Whenever the user submits a login request, the email and password 
@@ -85,6 +78,13 @@ def logout():
     return response
 
 
+# Members API Route
+@app.route("/tasks")
+@jwt_required()
+def tasks():
+    return {"tasks": ["task1", "task2", "task3"]}
+
+
 @app.route("/profile")
 @jwt_required()
 def my_profile():
@@ -96,12 +96,5 @@ def my_profile():
     return response_body
 
 
-# Members API Route
-@app.route("/tasks")
-@jwt_required()
-def tasks():
-    return {"tasks": ["task1", "task2", "task3"]}
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+#if __name__ == "__main__":
+    #app.run(debug=True)
