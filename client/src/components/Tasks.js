@@ -4,16 +4,21 @@ import TaskList from './TasksList';
 
 function Tasks(props) {
   // State variables
+  const userId = localStorage.getItem('user_id');
   const [view, setView] = useState('list'); // 'list', 'tasks', 'subtasks'
   const [selectedListId, setSelectedListId] = useState(null);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [taskData, setTaskData] = useState({ tasks: [], lists: [] });
+  
 
   // Function to fetch data from the server
   function getData() {
     axios({
       method: 'GET',
       url: '/tasks',
+      params: {
+        user_id: userId
+      },
       headers: {
         Authorization: 'Bearer ' + props.token,
       },
