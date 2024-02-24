@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import axios from "axios";
+import TaskList from './TasksList';
 
 function Tasks(props) {
 
-  const [taskData, setTaskData] = useState(null)
+  const [taskData, setTaskData] = useState({ tasks: [] })
   function getData() {
     axios({
       method: "GET",
@@ -27,21 +28,20 @@ function Tasks(props) {
 
   return (
     <div className="Task">
-
-        <p>To get your task details: </p><button onClick={getData}>Click me</button>
-        {taskData && 
-          <div>
-              {(typeof taskData.tasks === 'undefined') ? (
-                <p>No tasks</p>
-              ) : (
-                taskData.tasks.map((task, i) => (
-                  <p key={i}>{i+1}. {task}</p>
-              ))
-              )}
-          </div>
-        }
+      <p>To get your task details: </p>
+      <button onClick={getData}>Click me</button>
+      {taskData && (
+        <div>
+          {typeof taskData.tasks === 'undefined' ? (
+            <p>No tasks</p>
+          ) : (
+            <TaskList tasks={taskData.tasks} />
+          )}
+        </div>
+      )}
     </div>
   );
+
 }
 
 export default Tasks;
