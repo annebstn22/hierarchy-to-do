@@ -1,42 +1,31 @@
-import React, {useState, useEffect} from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Login from './components/Login'
+import Profile from './components/Profile'
+import Header from './components/Header'
+import useToken from './components/useToken'
+import Tasks from './components/Tasks'
+import './App.css'
 
 function App() {
-
-  const [data, setData] = useState([{}])
-
-  /* Use useeffect to fetch the /members route in the backend, and whatever
-  response it gets we put it into json, and wtv is in the json
-  we put it into the data state, and put console log to see if 
-  we successfully fetched the data */
-
-  useEffect(() => {
-    fetch("/tasks").then(
-      res => res.json()
-    ).then(
-      data => {
-        setData(data)
-        console.log(data)
-      }
-    )
-
-  }, []) 
-  /* The empty array makes it run only once */
+  const { token, removeToken, setToken } = useToken();
 
   return (
-    /* check if members array is equaled to undefined, that means the api
-      is being fetched so display loading, otherwise api has been fetched, so map every members to a p tag to 
-      display the members */
-    <div>
-      {(typeof data.tasks === 'undefined') ? (
-        <p>Loading...</p>
-      ) : (
-        data.tasks.map((task, i) => (
-          <p key={i}>{task}</p>
-      ))
-    )}
-      
-    </div>
-  )
+    <BrowserRouter>
+      <div className="App">
+        <Header token={removeToken}/>
+        {!token && token!=="" &&token!== undefined?  
+        <Login setToken={setToken} />
+        :(
+          <>
+            <Routes>
+              <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}></Route>
+              <Route exact path="/tasks" element={<Tasks token={token} setToken={setToken}/>}></Route>
+            </Routes>
+          </>
+        )}
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
