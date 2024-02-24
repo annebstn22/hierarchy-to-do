@@ -7,6 +7,10 @@ from datetime import datetime, timedelta, timezone
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
                                unset_jwt_cookies, jwt_required, JWTManager
 from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
+from wtforms import StringField, BooleanField, IntegerField, SubmitField
+from wtforms.validators import DataRequired
+from flask_wtf import FlaskForm
 
 
 # Create app instance
@@ -14,10 +18,58 @@ app = Flask(__name__)
 CORS(app)
 
 # Setup the Flask-JWT-Extended extension
-#app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')  # Change this!
+# app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')  # Change this!
+
+# Add Database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
+# Secret Key
 app.config["JWT_SECRET_KEY"] = 'asj93yr9fja9240q9whf0q29'
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 jwt = JWTManager(app)
+
+app.app_context().push()
+
+# Initialize database
+db = SQLAlchemy(app)
+
+
+# Users
+class User(db.Model):
+    user_id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+    def __repr__(self):
+        return f"User('{self.email}')"
+
+
+class List(db.Model):
+    list_id = db.Column(db.Integer, primary_key=True)
+    list_name = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+
+    def __repr__(self):
+        return f"List('{self.list_name}')"
+    
+    
+class Task(db.Model):
+    task_id = db.Column(db.Integer, primary_key=True)
+    task_title = db.Column(db.String(100), nullable=False)
+    done = db.Column(db.Boolean, default=False)
+    list_id = db.Column(db.Integer, db.ForeignKey('list.list_id'), nullable=False)
+    parent_task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'), nullable=True)
+
+    def __repr__(self):
+        return f"Task('{self.task_title}')"
+
+
+class TaskForm(FlaskForm):
+    task_title = StringField('Task Title', validators=[DataRequired()])
+    done = BooleanField('Done')
+    list_id = IntegerField('List ID', validators=[DataRequired()])
+    parent_task_id = IntegerField('Parent Task ID')
+    submit = SubmitField('Add Task')
+
 
 # Hardcoded users
 users = [
@@ -164,5 +216,5 @@ def my_profile():
     return response_body
 
 
-#if __name__ == "__main__":
-    #app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
