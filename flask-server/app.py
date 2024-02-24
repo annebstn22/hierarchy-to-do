@@ -19,6 +19,12 @@ app.config["JWT_SECRET_KEY"] = 'asj93yr9fja9240q9whf0q29'
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 jwt = JWTManager(app)
 
+# Hardcoded users
+users = [
+    {"user_id": 1, "email": "user@example.com", "password": "123"},
+    {"user_id": 2, "email": "user2@example.com", "password": "456"}
+]
+
 
 # The generated token always has a lifespan after which it expires
 # . To ensure that this does not happen while the user is logged in
@@ -63,12 +69,14 @@ def refresh_expiring_jwts(response):
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if email != "test" or password != "test":
-        return {"msg": "Wrong email or password"}, 401
+    
+    # Check the provided email and password against the users
+    for user in users:
+        if user['email'] == email and user['password'] == password:
+            access_token = create_access_token(identity=email)
+            return jsonify(access_token=access_token), 200
 
-    access_token = create_access_token(identity=email)
-    response = {"access_token": access_token}
-    return response
+    return {"msg": "Wrong email or password"}, 401
 
 
 @app.route("/logout", methods=["POST"])
@@ -84,60 +92,78 @@ def logout():
 def tasks():
     
     response = {
-        "users": [
-            {"user_id": 1,
-             "email": "user@example.com",
-             "password": "hashedpassword"
-             }
-        ],
-        "lists": [
-            {"list_id": 1,
-             "list_name": "CS162",
-             "user_id": 1
-             },
-            {"list_id": 2,
-             "list_name": "CS113",
-             "user_id": 1
-            }
-        ],
-        "tasks": [
-            {"task_id": 1,
-             "task_title": "To do list app",
-             "done": False,
-             "list_id": 1,
-             "parent_task_id": None},
-            {"task_id": 2,
-             "task_title": "Assignment 1",
-             "done": False,
-             "list_id": 1,
-             "parent_task_id": 1},
-            {"task_id": 3,
-             "task_title": "Read Chapter 1",
-             "done": False,
-             "list_id": 1,
-             "parent_task_id": 2},
-            {"task_id": 4,
-             "task_title": "Assignment 2",
-             "done": True,
-             "list_id": 1,
-             "parent_task_id": 1},
-            {"task_id": 5,
-             "task_title": "CS113 Lecture",
-             "done": False,
-             "list_id": 2,
-             "parent_task_id": None},
-            {"task_id": 6,
-             "task_title": "Lab Exercise",
-             "done": False,
-             "list_id": 2,
-             "parent_task_id": 5},
-            {"task_id": 7,
-             "task_title": "Homework",
-             "done": False,
-             "list_id": 2,
-             "parent_task_id": 5}
-        ]
+    "users": [
+        {"user_id": 1,
+         "email": "user@example.com",
+         "password": "hashedpassword"
+         },
+        {"user_id": 2,
+         "email": "anotheruser@example.com",
+         "password": "anotherhashedpassword"
+         }
+    ],
+    "lists": [
+        {"list_id": 1,
+         "list_name": "CS162",
+         "user_id": 1
+         },
+        {"list_id": 2,
+         "list_name": "CS113",
+         "user_id": 1
+        },
+        {"list_id": 3,
+         "list_name": "Math101",
+         "user_id": 2
         }
+    ],
+    "tasks": [
+        {"task_id": 1,
+         "task_title": "To do list app",
+         "done": False,
+         "list_id": 1,
+         "parent_task_id": None},
+        {"task_id": 2,
+         "task_title": "Assignment 1",
+         "done": False,
+         "list_id": 1,
+         "parent_task_id": 1},
+        {"task_id": 3,
+         "task_title": "Read Chapter 1",
+         "done": False,
+         "list_id": 1,
+         "parent_task_id": 2},
+        {"task_id": 4,
+         "task_title": "Assignment 2",
+         "done": True,
+         "list_id": 1,
+         "parent_task_id": 1},
+        {"task_id": 5,
+         "task_title": "CS113 Lecture",
+         "done": False,
+         "list_id": 2,
+         "parent_task_id": None},
+        {"task_id": 6,
+         "task_title": "Lab Exercise",
+         "done": False,
+         "list_id": 2,
+         "parent_task_id": 5},
+        {"task_id": 7,
+         "task_title": "Homework",
+         "done": False,
+         "list_id": 2,
+         "parent_task_id": 5},
+        {"task_id": 8,
+         "task_title": "Math101 Assignment",
+         "done": True,
+         "list_id": 3,
+         "parent_task_id": None},
+        {"task_id": 9,
+         "task_title": "Study for Math101 Exam",
+         "done": False,
+         "list_id": 3,
+         "parent_task_id": 8}]
+    }
+
     response_body = {
         "tasks": [
             "Finish authentication", 
