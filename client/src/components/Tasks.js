@@ -16,7 +16,7 @@ function Tasks(props) {
       const res =response.data
       res.access_token && props.setToken(res.access_token)
       setTaskData(({
-        task_name: res.name}))
+        tasks: res.tasks}))
     }).catch((error) => {
       if (error.response) {
         console.log(error.response)
@@ -29,11 +29,17 @@ function Tasks(props) {
     <div className="Task">
 
         <p>To get your task details: </p><button onClick={getData}>Click me</button>
-        {taskData && <div>
-              <p>Task name: {taskData.task_name}</p>
-            </div>
+        {taskData && 
+          <div>
+              {(typeof taskData.tasks === 'undefined') ? (
+                <p>No tasks</p>
+              ) : (
+                taskData.tasks.map((task, i) => (
+                  <p key={i}>{i+1}. {task}</p>
+              ))
+              )}
+          </div>
         }
-
     </div>
   );
 }

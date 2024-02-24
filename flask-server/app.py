@@ -82,7 +82,15 @@ def logout():
 @app.route("/tasks")
 @jwt_required()
 def tasks():
-    return {"tasks": ["task1", "task2", "task3"]}
+    
+    {"tasks": ["task1", "task2", "task3"]}
+    response_body = {
+        "tasks": [
+            "Finish authentication", 
+            "Add task page", 
+            "Add hierarchy"]   
+    }
+    return response_body
 
 
 @app.route("/profile")
