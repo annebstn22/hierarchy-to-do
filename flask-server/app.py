@@ -25,6 +25,60 @@ users = [
     {"user_id": 2, "email": "user2@example.com", "password": "456"}
 ]
 
+lists = [
+    {"list_id": 1, "list_name": "CS162", "user_id": 1},
+    {"list_id": 2, "list_name": "CS113", "user_id": 1},
+    {"list_id": 3, "list_name": "Math101", "user_id": 2}
+]
+
+tasks = [
+        {"task_id": 1,
+         "task_title": "To do list app",
+         "done": False,
+         "list_id": 1,
+         "parent_task_id": None},
+        {"task_id": 2,
+         "task_title": "Assignment 1",
+         "done": False,
+         "list_id": 1,
+         "parent_task_id": 1},
+        {"task_id": 3,
+         "task_title": "Read Chapter 1",
+         "done": False,
+         "list_id": 1,
+         "parent_task_id": 2},
+        {"task_id": 4,
+         "task_title": "Assignment 2",
+         "done": True,
+         "list_id": 1,
+         "parent_task_id": 1},
+        {"task_id": 5,
+         "task_title": "CS113 Lecture",
+         "done": False,
+         "list_id": 2,
+         "parent_task_id": None},
+        {"task_id": 6,
+         "task_title": "Lab Exercise",
+         "done": False,
+         "list_id": 2,
+         "parent_task_id": 5},
+        {"task_id": 7,
+         "task_title": "Homework",
+         "done": False,
+         "list_id": 2,
+         "parent_task_id": 5},
+        {"task_id": 8,
+         "task_title": "Math101 Assignment",
+         "done": True,
+         "list_id": 3,
+         "parent_task_id": None},
+        {"task_id": 9,
+         "task_title": "Study for Math101 Exam",
+         "done": False,
+         "list_id": 3,
+         "parent_task_id": 8}]
+
+
 
 # The generated token always has a lifespan after which it expires
 # . To ensure that this does not happen while the user is logged in
@@ -74,7 +128,8 @@ def create_token():
     for user in users:
         if user['email'] == email and user['password'] == password:
             access_token = create_access_token(identity=email)
-            return jsonify(access_token=access_token), 200
+            # Include the user_id in the response
+            return jsonify(access_token=access_token, user_id=user['user_id']), 200
 
     return {"msg": "Wrong email or password"}, 401
 
@@ -86,91 +141,16 @@ def logout():
     return response
 
 
-# Members API Route
-@app.route("/tasks")
+@app.route("/tasks", methods=["GET"])
 @jwt_required()
-def tasks():
+def get_tasks():
+    user_id = request.args.get('user_id')
     
-    response = {
-    "users": [
-        {"user_id": 1,
-         "email": "user@example.com",
-         "password": "hashedpassword"
-         },
-        {"user_id": 2,
-         "email": "anotheruser@example.com",
-         "password": "anotherhashedpassword"
-         }
-    ],
-    "lists": [
-        {"list_id": 1,
-         "list_name": "CS162",
-         "user_id": 1
-         },
-        {"list_id": 2,
-         "list_name": "CS113",
-         "user_id": 1
-        },
-        {"list_id": 3,
-         "list_name": "Math101",
-         "user_id": 2
-        }
-    ],
-    "tasks": [
-        {"task_id": 1,
-         "task_title": "To do list app",
-         "done": False,
-         "list_id": 1,
-         "parent_task_id": None},
-        {"task_id": 2,
-         "task_title": "Assignment 1",
-         "done": False,
-         "list_id": 1,
-         "parent_task_id": 1},
-        {"task_id": 3,
-         "task_title": "Read Chapter 1",
-         "done": False,
-         "list_id": 1,
-         "parent_task_id": 2},
-        {"task_id": 4,
-         "task_title": "Assignment 2",
-         "done": True,
-         "list_id": 1,
-         "parent_task_id": 1},
-        {"task_id": 5,
-         "task_title": "CS113 Lecture",
-         "done": False,
-         "list_id": 2,
-         "parent_task_id": None},
-        {"task_id": 6,
-         "task_title": "Lab Exercise",
-         "done": False,
-         "list_id": 2,
-         "parent_task_id": 5},
-        {"task_id": 7,
-         "task_title": "Homework",
-         "done": False,
-         "list_id": 2,
-         "parent_task_id": 5},
-        {"task_id": 8,
-         "task_title": "Math101 Assignment",
-         "done": True,
-         "list_id": 3,
-         "parent_task_id": None},
-        {"task_id": 9,
-         "task_title": "Study for Math101 Exam",
-         "done": False,
-         "list_id": 3,
-         "parent_task_id": 8}]
-    }
+    # Filter tasks and lists based on user_id
+    user_tasks = [task for task in tasks if task['list_id'] in [lst['list_id'] for lst in lists if lst['user_id'] == int(user_id)]]
+    user_lists = [lst for lst in lists if lst['user_id'] == int(user_id)]
 
-    response_body = {
-        "tasks": [
-            "Finish authentication", 
-            "Add task page", 
-            "Add hierarchy"]   
-    }
-    return response
+    return jsonify({'tasks': user_tasks, 'lists': user_lists})
 
 
 @app.route("/profile")
