@@ -8,67 +8,37 @@ from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
                                unset_jwt_cookies, jwt_required, JWTManager
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import StringField, BooleanField, IntegerField, SubmitField
-from wtforms.validators import DataRequired
-from flask_wtf import FlaskForm
-
+from database import db
+from models import User, Task, List
 
 # Create app instance
 app = Flask(__name__)
 CORS(app)
 
+# Database name
+db_name = 'todo.db'
+
 # Setup the Flask-JWT-Extended extension
 # app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET')  # Change this!
 
 # Add Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
+
+# Suppresses warning while tracking modifications
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 # Secret Key
 app.config["JWT_SECRET_KEY"] = 'asj93yr9fja9240q9whf0q29'
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 jwt = JWTManager(app)
 
-app.app_context().push()
-
-# Initialize database
-db = SQLAlchemy(app)
+# Initialising SQLAlchemy with Flask App
+db.init_app(app)
 
 
-# Users
-class User(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
-
-    def __repr__(self):
-        return f"User('{self.email}')"
-
-
-class List(db.Model):
-    list_id = db.Column(db.Integer, primary_key=True)
-    list_name = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
-
-    def __repr__(self):
-        return f"List('{self.list_name}')"
-    
-    
-class Task(db.Model):
-    task_id = db.Column(db.Integer, primary_key=True)
-    task_title = db.Column(db.String(100), nullable=False)
-    done = db.Column(db.Boolean, default=False)
-    list_id = db.Column(db.Integer, db.ForeignKey('list.list_id'), nullable=False)
-    parent_task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'), nullable=True)
-
-    def __repr__(self):
-        return f"Task('{self.task_title}')"
-
-
-class TaskForm(FlaskForm):
-    task_title = StringField('Task Title', validators=[DataRequired()])
-    done = BooleanField('Done')
-    list_id = IntegerField('List ID', validators=[DataRequired()])
-    parent_task_id = IntegerField('Parent Task ID')
-    submit = SubmitField('Add Task')
+def create_db():
+    with app.app_context():
+        db.create_all()
 
 
 # Hardcoded users
@@ -175,15 +145,38 @@ def refresh_expiring_jwts(response):
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    
-    # Check the provided email and password against the users
-    for user in users:
-        if user['email'] == email and user['password'] == password:
-            access_token = create_access_token(identity=email)
-            # Include the user_id in the response
-            return jsonify(access_token=access_token, user_id=user['user_id']), 200
+
+    # Query the User model from the database
+    user = User.query.filter_by(email=email, password=password).first()
+
+    if user:
+        access_token = create_access_token(identity=email)
+        # Include the user_id in the response
+        return jsonify(access_token=access_token, user_id=user.user_id), 200
 
     return {"msg": "Wrong email or password"}, 401
+
+
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    user_id = request.args.get('user_id')
+
+    # Query the database to get the lists and tasks that belong to the provided user_id
+    lists = List.query.filter_by(user_id=user_id).all()
+    tasks = Task.query.filter(Task.list_id.in_([lst.list_id for lst in lists])).all()
+
+    # Convert SQLAlchemy objects to dictionaries for JSON serialization
+    lists_data = [{'list_id': lst.list_id, 'list_name': lst.list_name, 'user_id': lst.user_id} for lst in lists]
+    tasks_data = [{'task_id': task.task_id, 'task_title': task.task_title, 'done': task.done,
+                   'list_id': task.list_id, 'parent_task_id': task.parent_task_id} for task in tasks]
+
+    response = {
+        'lists': lists_data,
+        'tasks': tasks_data
+    }
+
+    return jsonify(response)
+
 
 
 @app.route("/logout", methods=["POST"])
@@ -217,4 +210,6 @@ def my_profile():
 
 
 if __name__ == "__main__":
+    from models import User, Task, List
+    create_db()
     app.run(debug=True)
