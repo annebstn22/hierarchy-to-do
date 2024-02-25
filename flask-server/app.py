@@ -178,7 +178,6 @@ def get_data():
     return jsonify(response)
 
 
-
 @app.route("/logout", methods=["POST"])
 def logout():
     response = jsonify({"msg": "logout successful"})
@@ -196,6 +195,19 @@ def get_tasks():
     user_lists = [lst for lst in lists if lst['user_id'] == int(user_id)]
 
     return jsonify({'tasks': user_tasks, 'lists': user_lists})
+
+@app.route('/tasks', methods=['POST'])
+@jwt_required()
+def create_task():
+    # Your logic to create a new task goes here
+    # Access the task data using request.json
+
+    # Example:
+    task_data = request.json
+    # Your logic to add the task to the database or perform any other action
+
+    # Return a response, for example, the created task data
+    return jsonify({"message": "Task created successfully", "task": task_data}), 201
 
 
 @app.route("/profile")
