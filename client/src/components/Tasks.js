@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import TaskList from './TasksList';
+import useLocalStorage from './useLocalStorage';
 
 function Tasks(props) {
   // State variables
   const userId = localStorage.getItem('user_id');
   const [view, setView] = useState('list'); // 'list', 'tasks', 'subtasks'
-  const [selectedListId, setSelectedListId] = useState(null);
-  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [selectedListId, setSelectedListId] = useLocalStorage('list_id', null);
+  const [selectedTaskId, setSelectedTaskId] = useLocalStorage('task_id',null);
   const [taskData, setTaskData] = useState({ tasks: [], lists: [] });
   
 
@@ -46,12 +47,14 @@ function Tasks(props) {
   // Function to handle click on a list
   function onClickList(listId) {
     setSelectedListId(listId);
+  
     setView('tasks'); // Switch to the tasks view
   }
 
   // Function to handle click on a task
   function onClickTask(taskId) {
     setSelectedTaskId(taskId);
+
     setView('subtasks'); // Switch to the subtasks view
   }
 
