@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './components/Login'
-import Profile from './components/Profile'
 import Header from './components/Header'
 import useToken from './components/useToken'
 import Tasks from './components/Tasks'
@@ -18,7 +17,6 @@ function App() {
         :(
           <>
             <Routes>
-              <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}></Route>
               <Route exact path="/tasks" element={<Tasks token={token} setToken={setToken}/>}></Route>
             </Routes>
           </>
