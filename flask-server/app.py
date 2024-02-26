@@ -41,66 +41,6 @@ def create_db():
         db.create_all()
 
 
-# Hardcoded users
-users = [
-    {"user_id": 1, "email": "user@example.com", "password": "123"},
-    {"user_id": 2, "email": "user2@example.com", "password": "456"}
-]
-
-lists = [
-    {"list_id": 1, "list_name": "CS162", "user_id": 1},
-    {"list_id": 2, "list_name": "CS113", "user_id": 1},
-    {"list_id": 3, "list_name": "Math101", "user_id": 2}
-]
-
-tasks = [
-        {"task_id": 1,
-         "task_title": "To do list app",
-         "done": False,
-         "list_id": 1,
-         "parent_task_id": None},
-        {"task_id": 2,
-         "task_title": "Assignment 1",
-         "done": False,
-         "list_id": 1,
-         "parent_task_id": 1},
-        {"task_id": 3,
-         "task_title": "Read Chapter 1",
-         "done": False,
-         "list_id": 1,
-         "parent_task_id": 2},
-        {"task_id": 4,
-         "task_title": "Assignment 2",
-         "done": True,
-         "list_id": 1,
-         "parent_task_id": 1},
-        {"task_id": 5,
-         "task_title": "CS113 Lecture",
-         "done": False,
-         "list_id": 2,
-         "parent_task_id": None},
-        {"task_id": 6,
-         "task_title": "Lab Exercise",
-         "done": False,
-         "list_id": 2,
-         "parent_task_id": 5},
-        {"task_id": 7,
-         "task_title": "Homework",
-         "done": False,
-         "list_id": 2,
-         "parent_task_id": 5},
-        {"task_id": 8,
-         "task_title": "Math101 Assignment",
-         "done": True,
-         "list_id": 3,
-         "parent_task_id": None},
-        {"task_id": 9,
-         "task_title": "Study for Math101 Exam",
-         "done": False,
-         "list_id": 3,
-         "parent_task_id": 8}]
-
-
 
 # The generated token always has a lifespan after which it expires
 # . To ensure that this does not happen while the user is logged in
@@ -156,14 +96,15 @@ def create_token():
 
     return {"msg": "Wrong email or password"}, 401
 
-
+'''
 @app.route('/get_data', methods=['GET'])
 def get_data():
     user_id = request.args.get('user_id')
 
     # Query the database to get the lists and tasks that belong to the provided user_id
     lists = List.query.filter_by(user_id=user_id).all()
-    tasks = Task.query.filter(Task.list_id.in_([lst.list_id for lst in lists])).all()
+    list_ids = [lst.list_id for lst in lists]
+    tasks = Task.query.filter(Task.list_id.in_(list_ids)).all()
 
     # Convert SQLAlchemy objects to dictionaries for JSON serialization
     lists_data = [{'list_id': lst.list_id, 'list_name': lst.list_name, 'user_id': lst.user_id} for lst in lists]
@@ -176,6 +117,7 @@ def get_data():
     }
 
     return jsonify(response)
+'''
 
 
 @app.route("/logout", methods=["POST"])
@@ -190,11 +132,23 @@ def logout():
 def get_tasks():
     user_id = request.args.get('user_id')
     
-    # Filter tasks and lists based on user_id
-    user_tasks = [task for task in tasks if task['list_id'] in [lst['list_id'] for lst in lists if lst['user_id'] == int(user_id)]]
-    user_lists = [lst for lst in lists if lst['user_id'] == int(user_id)]
+    # Query the database to get the lists and tasks that belong to the provided user_id
+    lists = List.query.filter_by(user_id=user_id).all()
+    list_ids = [lst.list_id for lst in lists]
+    tasks = Task.query.filter(Task.list_id.in_(list_ids)).all()
+    
+    # Convert SQLAlchemy objects to dictionaries for JSON serialization
+    lists_data = [{'list_id': lst.list_id, 'list_name': lst.list_name, 'user_id': lst.user_id} for lst in lists]
+    tasks_data = [{'task_id': task.task_id, 'task_title': task.task_title, 'done': task.done,
+                   'list_id': task.list_id, 'parent_task_id': task.parent_task_id} for task in tasks]
 
-    return jsonify({'tasks': user_tasks, 'lists': user_lists})
+    response = {
+        'lists': lists_data,
+        'tasks': tasks_data
+    }
+
+    return jsonify(response)
+
 
 @app.route('/tasks', methods=['POST'])
 @jwt_required()
@@ -208,17 +162,6 @@ def create_task():
 
     # Return a response, for example, the created task data
     return jsonify({"message": "Task created successfully", "task": task_data}), 201
-
-
-@app.route("/profile")
-@jwt_required()
-def my_profile():
-    response_body = {
-        "name": "Nagato",
-        "about": "Hello! I'm a full stack developer that loves python and javascript"
-    }
-
-    return response_body
 
 
 if __name__ == "__main__":
