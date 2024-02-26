@@ -153,15 +153,11 @@ def get_tasks():
 @app.route('/tasks', methods=['POST'])
 @jwt_required()
 def create_task():
-    # Your logic to create a new task goes here
-    # Access the task data using request.json
-
-    # Example:
     task_data = request.json
-    # Your logic to add the task to the database or perform any other action
-
-    # Return a response, for example, the created task data
-    return jsonify({"message": "Task created successfully", "task": task_data}), 201
+    new_task = Task(**task_data)
+    db.session.add(new_task)
+    db.session.commit()
+    return jsonify({"message": "Task created successfully", "task": new_task.to_dict()}), 201
 
 
 if __name__ == "__main__":
