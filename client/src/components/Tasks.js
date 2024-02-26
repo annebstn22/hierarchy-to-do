@@ -17,6 +17,13 @@ function Tasks(props) {
     getData();
   };
 
+  // Use useEffect to fetch data when the component mounts
+  useEffect(() => {
+    getData();
+    setSelectedTaskId(null);
+    setSelectedListId(null);
+  }, []); // Empty dependency array ensures it runs only once on mount
+
   // Function to fetch data from the server
   function getData() {
     axios({
@@ -49,14 +56,12 @@ function Tasks(props) {
       });
   }
 
-  // Use useEffect to fetch data when the component mounts
-  useEffect(() => {
-    getData();
-  }, []); // Empty dependency array ensures it runs only once on mount
+
 
   // Function to handle click on a list
   function onClickList(listId) {
     setSelectedListId(listId);
+    setSelectedTaskId(null);
     setView('tasks'); // Switch to the tasks view
   }
 
@@ -92,34 +97,47 @@ function Tasks(props) {
             selectedListId={selectedListId}
             refreshData={refreshData}
           />
-          <ul>
-            {taskData.tasks
-              .filter(
-                (task) => task.list_id === selectedListId && !task.parent_task_id
-              )
-              .map((task) => (
-                <li key={task.task_id} onClick={() => onClickTask(task.task_id)}>
-                  {task.task_title}
-                </li>
-              ))}
-          </ul>
+          {taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id).length > 0 ? (
+            <ul>
+              {taskData.tasks
+                .filter((task) => task.list_id === selectedListId && !task.parent_task_id)
+                .map((task) => (
+                  <li key={task.task_id} onClick={() => onClickTask(task.task_id)}>
+                    {task.task_title}
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <p>No tasks found. Please add a task.</p>
+          )}
         </div>
       )}
 
       {/* Display subtasks */}
-      {view === 'subtasks' && (
-        <div>
-          <p>Subtasks:</p>
-          <TaskList
-            tasks={taskData.tasks.filter(
-              (task) => task.parent_task_id === selectedTaskId
-            )}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
+{view === 'subtasks' && (
+  <div>
+    <p>Subtasks:</p>
+    <TaskForm
+      token={props.token}
+      userId={userId}
+      selectedListId={selectedListId}
+      refreshData={refreshData}
+    />
+    {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId).length > 0 ? (
+      <ul>
+        {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId)
+          .map((subtask) => (
+            <li key={subtask.task_id} onClick={() => onClickTask(subtask.task_id)}>
+              {subtask.task_title}
+            </li>
+          ))}
+      </ul>
+    ) : (
+      <p>No subtasks found. Please add a subtask.</p>
+    )}
+  </div>
+)}
+</div>
+);}
 
-export default Tasks;
-
+      export default Tasks;
