@@ -11,8 +11,8 @@ function TaskForm({ token, userId, selectedListId, refreshData }) {
     const newTask = {
       task_title: taskTitle,
       done: false,
-      list_id: localStorage.getItem('list_id') || null,
-      parent_task_id: localStorage.getItem('task_id') || null,
+      list_id: parseInt(localStorage.getItem('list_id')) || null,
+      parent_task_id: parseInt(localStorage.getItem('task_id')) || null,
     };
 
     // Send the new task to the server
@@ -23,6 +23,7 @@ function TaskForm({ token, userId, selectedListId, refreshData }) {
         },
       })
       .then((response) => {
+        console.log('New task details:', response.data);
         // Clear the task title after successful submission
         setTaskTitle('');
         // Refresh task data
