@@ -17,6 +17,13 @@ class List(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     tasks = db.relationship('Task', backref='list', lazy=True)
     
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'list_name': self.list_name
+        }
+    
     
 class Task(db.Model):
     __tablename__ = 'task'

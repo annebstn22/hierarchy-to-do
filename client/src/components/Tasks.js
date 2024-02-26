@@ -3,6 +3,7 @@ import axios from 'axios';
 import TaskList from './TasksList';
 import useLocalStorage from './useLocalStorage';
 import TaskForm from './TaskForm';
+import ListForm from './ListForm';
 
 function Tasks(props) {
   // State variables
@@ -77,6 +78,11 @@ function Tasks(props) {
       {view === 'list' && (
         <div>
           <p>Lists:</p>
+          <ListForm
+            token={props.token}
+            userId={userId}
+            refreshData={refreshData}
+          />
           <ul>
             {taskData.lists.map((list) => (
               <li key={list.list_id} onClick={() => onClickList(list.list_id)}>

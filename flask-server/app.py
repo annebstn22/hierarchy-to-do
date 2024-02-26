@@ -160,6 +160,16 @@ def create_task():
     return jsonify({"message": "Task created successfully", "task": new_task.to_dict()}), 201
 
 
+@app.route('/api/lists', methods=['POST'])
+@jwt_required()
+def create_list():
+    list_data = request.get_json()
+    new_list = List(**list_data)
+    db.session.add(new_list)
+    db.session.commit()
+    return jsonify({"message": "Task created successfully", "task": new_list.to_dict()}), 201
+
+
 if __name__ == "__main__":
     from models import User, Task, List
     create_db()
