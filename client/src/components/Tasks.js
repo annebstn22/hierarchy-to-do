@@ -98,15 +98,10 @@ function Tasks(props) {
             refreshData={refreshData}
           />
           {taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id).length > 0 ? (
-            <ul>
-              {taskData.tasks
-                .filter((task) => task.list_id === selectedListId && !task.parent_task_id)
-                .map((task) => (
-                  <li key={task.task_id} onClick={() => onClickTask(task.task_id)}>
-                    {task.task_title}
-                  </li>
-                ))}
-            </ul>
+            <TaskList
+              tasks={taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id)}
+              onClickTask={onClickTask}
+            />
           ) : (
             <p>No tasks found. Please add a task.</p>
           )}
@@ -114,30 +109,26 @@ function Tasks(props) {
       )}
 
       {/* Display subtasks */}
-{view === 'subtasks' && (
-  <div>
-    <p>Subtasks:</p>
-    <TaskForm
-      token={props.token}
-      userId={userId}
-      selectedListId={selectedListId}
-      refreshData={refreshData}
-    />
-    {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId).length > 0 ? (
-      <ul>
-        {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId)
-          .map((subtask) => (
-            <li key={subtask.task_id} onClick={() => onClickTask(subtask.task_id)}>
-              {subtask.task_title}
-            </li>
-          ))}
-      </ul>
-    ) : (
-      <p>No subtasks found. Please add a subtask.</p>
-    )}
-  </div>
-)}
-</div>
-);}
+      {view === 'subtasks' && (
+        <div>
+          <p>Subtasks:</p>
+          <TaskForm
+            token={props.token}
+            userId={userId}
+            selectedListId={selectedListId}
+            refreshData={refreshData}
+          />
+          {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId).length > 0 ? (
+            <TaskList
+              tasks={taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId)}
+              onClickTask={onClickTask}
+            />
+          ) : (
+            <p>No subtasks found. Please add a subtask.</p>
+          )}
+        </div>
+      )}
+      </div>
+      );}
 
       export default Tasks;
