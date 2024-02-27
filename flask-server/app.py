@@ -29,7 +29,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Secret Key
 app.config["JWT_SECRET_KEY"] = 'asj93yr9fja9240q9whf0q29'
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=5)
 jwt = JWTManager(app)
 
 # Initialising SQLAlchemy with Flask App
@@ -170,7 +170,19 @@ def create_list():
     return jsonify({"message": "Task created successfully", "task": new_list.to_dict()}), 201
 
 
+@app.route('/tasks/<int:task_id>', methods=['PUT'])
+@jwt_required()
+def update_task(task_id):
+    task_data = request.get_json()
+    print(task_data)
+    task = Task.query.get(task_id)
+
+    task.done = task_data.get('done', task.done)
+    
+    db.session.commit()
+    return jsonify({"message": "Task updated successfully", "task": task.to_dict()}), 200
+
+
 if __name__ == "__main__":
-    from models import User, Task, List
     create_db()
     app.run(debug=True)

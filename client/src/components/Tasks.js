@@ -67,7 +67,7 @@ function Tasks(props) {
   }
 
   // Function to handle click on a task
-  function onClickTask(taskId) {
+function onClickTask(taskId) {
     setSelectedTaskId(taskId);
     setView('subtasks'); // Switch to the subtasks view
   }
@@ -106,7 +106,7 @@ function Tasks(props) {
           {taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id).length > 0 ? (
             <TaskList
               tasks={taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id)}
-              onClickTask={onClickTask}
+              onClickTask={onClickTask} token={props.token} refreshData={refreshData}
             />
           ) : (
             <p>No tasks found. Please add a task.</p>
@@ -127,8 +127,7 @@ function Tasks(props) {
           {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId).length > 0 ? (
             <TaskList
               tasks={taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId)}
-              onClickTask={onClickTask}
-            />
+              onClickTask={onClickTask} token={props.token} refreshData={refreshData} /> 
           ) : (
             <p>No subtasks found. Please add a subtask.</p>
           )}
