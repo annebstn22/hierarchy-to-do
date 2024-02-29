@@ -6,32 +6,32 @@ import TaskForm from './TaskForm';
 import ListForm from './ListForm';
 
 function Tasks(props) {
-  // State variables
   const userId = localStorage.getItem('user_id');
-  const [view, setView] = useState('list'); // 'list', 'tasks', 'subtasks'
+  const [view, setView] = useState('list');
   const [selectedListId, setSelectedListId] = useLocalStorage('list_id', null);
   const [selectedTaskId, setSelectedTaskId] = useLocalStorage('task_id', null);
   const [taskData, setTaskData] = useState({ tasks: [], lists: [] });
 
-  // Function to refresh data
+  const [editListId, setEditListId] = useState(null);
+  const [newListName, setNewListName] = useState('');
+
   const refreshData = () => {
     getData();
   };
 
-  // Use useEffect to fetch data when the component mounts
   useEffect(() => {
     getData();
     setSelectedTaskId(null);
     setSelectedListId(null);
-  }, []); // Empty dependency array ensures it runs only once on mount
+    setEditListId(null); 
+  }, []);
 
-  // Function to fetch data from the server
   function getData() {
     axios({
       method: 'GET',
       url: '/tasks',
       params: {
-        user_id: userId
+        user_id: userId,
       },
       headers: {
         Authorization: 'Bearer ' + props.token,
@@ -40,8 +40,6 @@ function Tasks(props) {
       .then((response) => {
         const res = response.data;
         res.access_token && props.setToken(res.access_token);
-
-        // Set task data and default view to list
         setTaskData({
           tasks: res.tasks,
           lists: res.lists,
@@ -57,38 +55,54 @@ function Tasks(props) {
       });
   }
 
-
-
-  // Function to handle click on a list
   function onClickList(listId) {
     setSelectedListId(listId);
     setSelectedTaskId(null);
-    setView('tasks'); // Switch to the tasks view
+    setView('tasks');
+    setEditListId(null); 
   }
 
-  // Function to handle click on a task
-function onClickTask(taskId) {
+  function onClickTask(taskId) {
     setSelectedTaskId(taskId);
-    setView('subtasks'); // Switch to the subtasks view
+    setView('subtasks');
   }
 
-const handleDeleteList = (listId) => {
-  axios
-    .delete(`/lists/${listId}`, {
-      headers: {
-        Authorization: `Bearer ${props.token}`
-      },
-    })
-    .then((response) => {
-      console.log('List deleted:', response.data);
-      // Refresh task data
-      refreshData();
-    })
-    .catch((error) => {
-      console.error('Error deleting list', error);
-    });
-};
+  const handleDeleteList = (listId) => {
+    axios
+      .delete(`/lists/${listId}`, {
+        headers: {
+          Authorization: `Bearer ${props.token}`,
+        },
+      })
+      .then((response) => {
+        console.log('List deleted:', response.data);
+        refreshData();
+      })
+      .catch((error) => {
+        console.error('Error deleting list', error);
+      });
+  };
 
+  const handleEditListName = (listId) => {
+    const newData = {
+      list_name: newListName,
+    };
+
+    axios
+      .put(`/lists/${listId}`, newData, {
+        headers: {
+          Authorization: `Bearer ${props.token}`,
+        },
+      })
+      .then((response) => {
+        console.log('List name updated:', response.data);
+        refreshData();
+        setEditListId(null);
+      })
+      .catch((error) => {
+        console.error('Error updating list name', error);
+      });
+  };
 
   return (
     <div className="Task">
@@ -96,19 +110,37 @@ const handleDeleteList = (listId) => {
       {view === 'list' && (
         <div>
           <p>Lists:</p>
-          <ListForm
-            token={props.token}
-            userId={userId}
-            refreshData={refreshData}
-          />
+          <ListForm token={props.token} userId={userId} refreshData={refreshData} />
           <ul>
             {taskData.lists.map((list) => (
-              <li key={list.list_id} onClick={() => onClickList(list.list_id)}>
-                {list.list_name}
+              <li key={list.list_id}>
+                {editListId === list.list_id ? (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleEditListName(list.list_id);
+                    }}
+                  >
+                    <input
+                      type="text"
+                      value={newListName}
+                      onChange={(e) => setNewListName(e.target.value)}
+                    />
+                    <button type="submit">Save</button>
+                  </form>
+                ) : (
+                  <>
+                    <div className="list-title" onClick={() => onClickList(list.list_id)}>
+                      <span>{list.list_name}</span>
+                    </div>
+                    <button onClick={() => setEditListId(list.list_id)}>Edit</button>
+                  </>
+                )}
                 <button onClick={() => handleDeleteList(list.list_id)}>x</button>
               </li>
             ))}
           </ul>
+
         </div>
       )}
 

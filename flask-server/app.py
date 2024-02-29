@@ -223,6 +223,22 @@ def delete_list(list_id):
     return jsonify({'message': 'List and associated tasks deleted successfully'}), 200
 
 
+@app.route('/lists/<int:list_id>', methods=['PUT'])
+@jwt_required()
+def update_list(list_id):
+    list_data = request.json
+    list_to_update = List.query.get(list_id)
+
+    if not list_to_update:
+        return jsonify({'error': 'List not found'}), 404
+
+    # Update list name
+    list_to_update.list_name = list_data.get('list_name', list_to_update.list_name)
+
+    db.session.commit()
+    return jsonify({"message": "List updated successfully", "list": list_to_update.to_dict()}), 200
+
+
 if __name__ == "__main__":
     create_db()
     app.run(debug=True)
