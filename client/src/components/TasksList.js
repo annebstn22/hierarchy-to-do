@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
-const TaskList = ({ tasks, onClickTask, token, setTaskData }) => {
+const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
   const [editingTaskId, setEditingTaskId] = useState(null);
 
   const handleCheckboxChange = (taskId, doneStatus) => {
@@ -76,6 +76,32 @@ const TaskList = ({ tasks, onClickTask, token, setTaskData }) => {
       });
   };
 
+  const handleMoveTask = (taskId, newListId) => {
+    const newData = {
+      list_id: newListId,
+    };
+
+    console.log('newData', newData);
+
+    axios
+      .put(`/tasks/${taskId}`, newData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setTaskData((prevData) => ({
+          ...prevData,
+          tasks: prevData.tasks.map((task) =>
+            task.task_id === taskId ? { ...task, list_id: newListId } : task
+          ),
+        }));
+      })
+      .catch((error) => {
+        console.error('Error moving task', error);
+      });
+  };
+
   return (
     <div>
       <ul>
@@ -108,6 +134,22 @@ const TaskList = ({ tasks, onClickTask, token, setTaskData }) => {
                   <button onClick={() => setEditingTaskId(task.task_id)}>Edit</button>
                 </>
               )}
+
+              {task.parent_task_id === null ? (
+                <select
+                  value={task.list_id}
+                  onChange={(e) => handleMoveTask(task.task_id, parseInt(e.target.value, 10))}
+                >
+                  {lists.map((list) => (
+                    <option key={list.list_id} value={list.list_id}>
+                      {list.list_name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <span></span>
+              )}
+
               <button onClick={() => handleDeleteTask(task.task_id)}>x</button>
             </li>
           </div>

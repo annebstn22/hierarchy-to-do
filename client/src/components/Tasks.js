@@ -141,8 +141,6 @@ function Tasks(props) {
       });
   };
 
-
-
   return (
     <div>
       <button onClick={handleBackButton}>Back</button>
@@ -198,6 +196,7 @@ function Tasks(props) {
             />
             {taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id).length > 0 ? (
               <TaskList
+                lists={taskData.lists}
                 tasks={taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id)}
                 onClickTask={onClickTask} token={props.token} setTaskData={setTaskData}
               />
@@ -220,6 +219,7 @@ function Tasks(props) {
             />
             {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId).length > 0 ? (
               <TaskList
+                lists={taskData.lists}
                 tasks={taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId)}
                 onClickTask={onClickTask} token={props.token} setTaskData={setTaskData} /> 
             ) : (

@@ -170,6 +170,13 @@ def create_list():
     return jsonify({"message": "Task created successfully", "list": new_list.to_dict()}), 201
 
 
+def update_subtasks_list_id(task_id, new_list_id):
+    subtasks = Task.query.filter_by(parent_task_id=task_id).all()
+    for subtask in subtasks:
+        subtask.list_id = new_list_id
+        db.session.commit()
+        update_subtasks_list_id(subtask.task_id, new_list_id)
+
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
 @jwt_required()
 def update_task(task_id):
@@ -183,8 +190,17 @@ def update_task(task_id):
     task.done = task_data.get('done', task.done)
     task.task_title = task_data.get('task_title', task.task_title)
 
-    db.session.commit()
+    # If list_id is being updated, update it for all subtasks as well
+    if 'list_id' in task_data:
+        new_list_id = task_data['list_id']
+        task.list_id = new_list_id
+        db.session.commit()  # commit changes after updating the task's list_id
+
+        # Update list_id for all subtasks
+        update_subtasks_list_id(task_id, new_list_id)
+
     return jsonify({"message": "Task updated successfully", "task": task.to_dict()}), 200
+
 
 
 
