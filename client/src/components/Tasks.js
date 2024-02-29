@@ -72,6 +72,24 @@ function onClickTask(taskId) {
     setView('subtasks'); // Switch to the subtasks view
   }
 
+const handleDeleteList = (listId) => {
+  axios
+    .delete(`/lists/${listId}`, {
+      headers: {
+        Authorization: `Bearer ${props.token}`
+      },
+    })
+    .then((response) => {
+      console.log('List deleted:', response.data);
+      // Refresh task data
+      refreshData();
+    })
+    .catch((error) => {
+      console.error('Error deleting list', error);
+    });
+};
+
+
   return (
     <div className="Task">
       {/* Display list names */}
@@ -87,6 +105,7 @@ function onClickTask(taskId) {
             {taskData.lists.map((list) => (
               <li key={list.list_id} onClick={() => onClickList(list.list_id)}>
                 {list.list_name}
+                <button onClick={() => handleDeleteList(list.list_id)}>x</button>
               </li>
             ))}
           </ul>
