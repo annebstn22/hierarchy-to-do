@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
-const TaskList = ({ tasks, onClickTask, token, refreshData }) => {
+const TaskList = ({ tasks, onClickTask, token, setTaskData }) => {
   const [editingTaskId, setEditingTaskId] = useState(null);
 
   const handleCheckboxChange = (taskId, doneStatus) => {
@@ -18,7 +18,13 @@ const TaskList = ({ tasks, onClickTask, token, refreshData }) => {
         },
       })
       .then((response) => {
-        refreshData();
+        //refreshData();
+        setTaskData((prevData) => ({
+          ...prevData,
+          tasks: prevData.tasks.map((task) =>
+            task.task_id === taskId ? { ...task, done: newData.done } : task
+          ),
+        }));
       })
       .catch((error) => {
         console.error('Error updating task', error);
@@ -37,7 +43,13 @@ const TaskList = ({ tasks, onClickTask, token, refreshData }) => {
         },
       })
       .then((response) => {
-        refreshData();
+        //refreshData();
+        setTaskData((prevData) => ({
+          ...prevData,
+          tasks: prevData.tasks.map((task) =>
+            task.task_id === taskId ? { ...task, task_title: newTitle } : task
+          ),
+        }));
         setEditingTaskId(null);
       })
       .catch((error) => {
@@ -53,7 +65,11 @@ const TaskList = ({ tasks, onClickTask, token, refreshData }) => {
         },
       })
       .then((response) => {
-        refreshData();
+        //refreshData();
+        setTaskData((prevData) => ({
+          ...prevData,
+          tasks: prevData.tasks.filter((task) => task.task_id !== taskId),
+        }));
       })
       .catch((error) => {
         console.error('Error deleting task', error);

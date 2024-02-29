@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function TaskForm({ token, userId, selectedListId, refreshData }) {
+function TaskForm({ token, userId, selectedListId, refreshData, setTaskData }) {
   const [taskTitle, setTaskTitle] = useState('');
 
   const handleTaskSubmit = (e) => {
@@ -27,7 +27,11 @@ function TaskForm({ token, userId, selectedListId, refreshData }) {
         // Clear the task title after successful submission
         setTaskTitle('');
         // Refresh task data
-        refreshData();
+        //refreshData();
+        setTaskData((prevData) => ({
+          ...prevData,
+          tasks: [...prevData.tasks, response.data.task], 
+        }));
       })
       .catch((error) => {
         console.error('Error creating task:', error);
