@@ -16,6 +16,7 @@ class List(db.Model):
     list_name = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     tasks = db.relationship('Task', backref='list', lazy=True)
+    isDeleted = db.Column(db.Boolean, default=False, nullable=False)  
     
     def to_dict(self):
         return {
@@ -34,6 +35,8 @@ class Task(db.Model):
     list_id = db.Column(db.Integer, db.ForeignKey('list.list_id'), nullable=False)
     parent_task_id = db.Column(db.Integer, db.ForeignKey('task.task_id'), nullable=True)
     subtasks = db.relationship('Task', backref=db.backref('parent_task', remote_side=[task_id]), lazy=True)
+    isDeleted = db.Column(db.Boolean, default=False, nullable=False)  
+
     
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

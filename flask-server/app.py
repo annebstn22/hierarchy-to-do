@@ -133,9 +133,9 @@ def get_tasks():
     user_id = request.args.get('user_id')
     
     # Query the database to get the lists and tasks that belong to the provided user_id
-    lists = List.query.filter_by(user_id=user_id).all()
+    lists = List.query.filter_by(user_id=user_id, isDeleted = False).all()
     list_ids = [lst.list_id for lst in lists]
-    tasks = Task.query.filter(Task.list_id.in_(list_ids)).all()
+    tasks = Task.query.filter(Task.list_id.in_(list_ids), Task.isDeleted == False).all()
     
     # Convert SQLAlchemy objects to dictionaries for JSON serialization
     lists_data = [{'list_id': lst.list_id, 'list_name': lst.list_name, 'user_id': lst.user_id} for lst in lists]
@@ -167,7 +167,7 @@ def create_list():
     new_list = List(**list_data)
     db.session.add(new_list)
     db.session.commit()
-    return jsonify({"message": "Task created successfully", "task": new_list.to_dict()}), 201
+    return jsonify({"message": "Task created successfully", "list": new_list.to_dict()}), 201
 
 
 @app.route('/tasks/<int:task_id>', methods=['PUT'])
@@ -181,6 +181,41 @@ def update_task(task_id):
     
     db.session.commit()
     return jsonify({"message": "Task updated successfully", "task": task.to_dict()}), 200
+
+
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    task = Task.query.get(task_id)
+
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+
+    # Soft delete: Set isDeleted to True instead of actually deleting the task
+    task.isDeleted = True
+    db.session.commit()
+
+    return jsonify({'message': 'Task deleted successfully'}), 200
+
+
+@app.route('/lists/<int:list_id>', methods=['DELETE'])
+@jwt_required()
+def delete_list(list_id):
+    list_to_delete = List.query.get(list_id)
+
+    if not list_to_delete:
+        return jsonify({'error': 'List not found'}), 404
+
+    # Soft delete: Set isDeleted to True instead of actually deleting the list
+    list_to_delete.isDeleted = True
+
+    # Soft delete for associated tasks as well
+    tasks_to_delete = Task.query.filter_by(list_id=list_id).all()
+    for task in tasks_to_delete:
+        task.isDeleted = True
+
+    db.session.commit()
+
+    return jsonify({'message': 'List and associated tasks deleted successfully'}), 200
 
 
 if __name__ == "__main__":
