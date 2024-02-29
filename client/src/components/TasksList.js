@@ -30,23 +30,42 @@ const TaskList = ({ tasks, onClickTask, token, refreshData}) => {
         console.error('Error updating task', error);
       });
   };
+
+  const handleDeleteTask = (taskId) => {
+    axios
+      .delete(`/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log('Task deleted:', response.data);
+        // Refresh task data
+        refreshData();
+      })
+      .catch((error) => {
+        console.error('Error deleting task', error);
+      });
+  };
+
   return (
     <div>
         <ul>
         {tasks.map((task) => (
-          <div>
-              <input
-                type="checkbox"
-                checked={task.done}
-                onChange={() => handleCheckboxChange(task.task_id, task.done)}
-              />
-              <li key={'task ' + task.task_id} onClick={() => onClickTask(task.task_id)}>
-                {task.done ? ' (Completed) ' : ''}
-                {task.task_title}
-                {task.children && task.children.length > 0 && (
+          <div key={'task ' + task.task_id}>
+            <input
+              type="checkbox"
+              checked={task.done}
+              onChange={() => handleCheckboxChange(task.task_id, task.done)}
+            />
+            <li onClick={() => onClickTask(task.task_id)}>
+              {task.done ? ' (Completed) ' : ''}
+              {task.task_title}
+              <button onClick={() => handleDeleteTask(task.task_id)}>x</button>
+              {task.children && task.children.length > 0 && (
                 <TaskList tasks={task.children} />
-                )}
-              </li>
+              )}
+            </li>
           </div>
         ))}
         </ul>
