@@ -1,5 +1,6 @@
 from database import db
 
+# User Model
 class User(db.Model):
     __tablename__ = 'user'
     
@@ -8,7 +9,7 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     lists = db.relationship('List', backref='user', lazy=True)
     
-    
+# List Model
 class List(db.Model):
     __tablename__ = 'list'
     
@@ -24,8 +25,8 @@ class List(db.Model):
             'user_id': self.user_id,
             'list_name': self.list_name
         }
-    
-    
+
+# Task Model
 class Task(db.Model):
     __tablename__ = 'task'
     
