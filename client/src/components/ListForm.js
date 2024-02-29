@@ -14,7 +14,7 @@ const ListForm = ({ token, userId, refreshData }) => {
       };
 
     axios
-      .post('/tasks', newList, {
+      .post('/api/lists', newList, {
         headers: {
           Authorization: 'Bearer ' + token,
         },
