@@ -174,13 +174,18 @@ def create_list():
 @jwt_required()
 def update_task(task_id):
     task_data = request.get_json()
-    print(task_data)
     task = Task.query.get(task_id)
 
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+
+    # Update task attributes
     task.done = task_data.get('done', task.done)
-    
+    task.task_title = task_data.get('task_title', task.task_title)
+
     db.session.commit()
     return jsonify({"message": "Task updated successfully", "task": task.to_dict()}), 200
+
 
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])

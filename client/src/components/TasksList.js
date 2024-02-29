@@ -4,6 +4,9 @@ import { useState } from 'react';
 import axios from 'axios';
 
 const TaskList = ({ tasks, onClickTask, token, refreshData}) => {
+  const [editingTasks, setEditingTasks] = useState([]);
+  const [newTaskTitles, setNewTaskTitles] = useState({});
+
   const handleCheckboxChange = (taskId, doneStatus) => {
 
     console.log('Task ID:', taskId);
@@ -31,6 +34,28 @@ const TaskList = ({ tasks, onClickTask, token, refreshData}) => {
       });
   };
 
+  const handleRenameTask = (taskId) => {
+    const newData = {
+      task_title: newTaskTitles[taskId],
+    };
+
+    axios
+      .put(`/tasks/${taskId}`, newData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        refreshData();
+        setEditingTasks((prevEditingTasks) =>
+          prevEditingTasks.filter((id) => id !== taskId)
+        );
+      })
+      .catch((error) => {
+        console.error('Error renaming task', error);
+      });
+  };
+
   const handleDeleteTask = (taskId) => {
     axios
       .delete(`/tasks/${taskId}`, {
@@ -50,25 +75,50 @@ const TaskList = ({ tasks, onClickTask, token, refreshData}) => {
 
   return (
     <div>
-        <ul>
+      <ul>
         {tasks.map((task) => (
-          <div key={'task ' + task.task_id}>
+          <div className={'task ' + (task.done ? 'done' : '')} key={'task ' + task.task_id}>
             <input
               type="checkbox"
               checked={task.done}
               onChange={() => handleCheckboxChange(task.task_id, task.done)}
             />
-            <li onClick={() => onClickTask(task.task_id)}>
+
+            <li>
               {task.done ? ' (Completed) ' : ''}
-              {task.task_title}
-              <button onClick={() => handleDeleteTask(task.task_id)}>x</button>
-              {task.children && task.children.length > 0 && (
-                <TaskList tasks={task.children} />
+
+              {!editingTasks.includes(task.task_id) && (
+                <div className="task-title" onClick={() => setEditingTasks((prev) => [...prev, task.task_id])}>
+                  <span>{task.task_title}</span>
+                </div>
               )}
+
+              {editingTasks.includes(task.task_id) && (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleRenameTask(task.task_id);
+                  }}>
+                  <input
+                    type="text"
+                    value={newTaskTitles[task.task_id] || task.task_title}
+                    onChange={(ev) =>
+                      setNewTaskTitles((prevNewTaskTitles) => ({
+                        ...prevNewTaskTitles,
+                        [task.task_id]: ev.target.value,
+                      }))
+                    }
+                  />
+                  <button type="submit">Save</button>
+              </form>
+              )}
+
+              <button onClick={() => onClickTask(task.task_id)}>-&gt;</button>
+              <button onClick={() => handleDeleteTask(task.task_id)}>x</button>
             </li>
           </div>
         ))}
-        </ul>
+      </ul>
     </div>
   );
 };
