@@ -4,11 +4,13 @@ import axios from "axios";
 
 function Login(props) {
 
+    // Create a state to store the login form data  
     const [loginForm, setloginForm] = useState({
       email: "",
       password: ""
     })
 
+    // Send login credentials to the server
     function logMeIn(event) {
       axios({
         method: "POST",

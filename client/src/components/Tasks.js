@@ -24,6 +24,7 @@ function Tasks(props) {
     getData();
   };
 
+  // Get the data when the component is first mounted
   useEffect(() => {
     getData();
     setSelectedTaskId(null);
@@ -31,6 +32,7 @@ function Tasks(props) {
     setEditListId(null); 
   }, []);
 
+  // Get the data from the server
   function getData() {
     axios({
       method: 'GET',
@@ -60,6 +62,8 @@ function Tasks(props) {
       });
   }
 
+  // Handle the click event for a list
+  // Sets the list ID to current list ID and sets the view to tasks
   function onClickList(listId) {
     setSelectedListId(listId);
     setSelectedTaskId(null);
@@ -67,12 +71,15 @@ function Tasks(props) {
     setEditListId(null); 
   }
 
+  // Handle the click event for a task
+  // Sets the task ID to current task ID and sets the view to subtasks
   function onClickTask(taskId) {
     setTaskStack((prevStack) => [...prevStack, taskId]);
     setSelectedTaskId(taskId);
     setView('subtasks');
   }
 
+  // Handle the click event for the delete list button
   const handleDeleteList = (listId) => {
     axios
       .delete(`/lists/${listId}`, {
@@ -93,6 +100,7 @@ function Tasks(props) {
       });
   };
 
+  // Handle the back button
   const handleBackButton = () => {
     // Pop the last task ID from the task stack
     const newStack = [...taskStack];
@@ -117,7 +125,11 @@ function Tasks(props) {
     }
   };
 
+
+  // Handle the edit list name button
   const handleEditListName = (listId) => {
+
+    // Create a new object with the updated list name
     const newData = {
       list_name: newListName,
     };
@@ -198,7 +210,6 @@ function Tasks(props) {
               token={props.token}
               userId={userId}
               selectedListId={selectedListId}
-              //refreshData={refreshData}
               setTaskData={setTaskData}
             />
             {taskData.tasks.filter((task) => task.list_id === selectedListId && !task.parent_task_id).length > 0 ? (
@@ -221,7 +232,6 @@ function Tasks(props) {
               token={props.token}
               userId={userId}
               selectedListId={selectedListId}
-              //refreshData={refreshData}
               setTaskData={setTaskData}
             />
             {taskData.tasks.filter((task) => task.parent_task_id === selectedTaskId).length > 0 ? (

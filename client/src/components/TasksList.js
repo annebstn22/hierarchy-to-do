@@ -6,14 +6,21 @@ import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 
+// This component displays each task with a checkbox, edit button, and delete button.
 const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
+
+  // Sets the task being edited
   const [editingTaskId, setEditingTaskId] = useState(null);
 
+  // Function to handle the checkbox change
   const handleCheckboxChange = (taskId, doneStatus) => {
+
+    // Change done status to the opposite of what it was
     const newData = {
       done: !doneStatus,
     };
 
+    // Send the updated done value to the server
     axios
       .put(`/tasks/${taskId}`, newData, {
         headers: {
@@ -21,7 +28,6 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
         },
       })
       .then((response) => {
-        //refreshData();
         setTaskData((prevData) => ({
           ...prevData,
           tasks: prevData.tasks.map((task) =>
@@ -34,7 +40,11 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
       });
   };
 
+
+  // Function to handle the renaming of a task
   const handleRenameTask = (taskId, newTitle) => {
+
+    // Change the task title to the new title
     const newData = {
       task_title: newTitle,
     };
@@ -46,7 +56,6 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
         },
       })
       .then((response) => {
-        //refreshData();
         setTaskData((prevData) => ({
           ...prevData,
           tasks: prevData.tasks.map((task) =>
@@ -60,6 +69,7 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
       });
   };
 
+  // Function to handle the deletion of a task
   const handleDeleteTask = (taskId) => {
     axios
       .delete(`/tasks/${taskId}`, {
@@ -68,7 +78,6 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
         },
       })
       .then((response) => {
-        //refreshData();
         setTaskData((prevData) => ({
           ...prevData,
           tasks: prevData.tasks.filter((task) => task.task_id !== taskId),
@@ -79,6 +88,8 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
       });
   };
 
+
+  // Function to handle the moving of a first-level task to a different list
   const handleMoveTask = (taskId, newListId) => {
     const newData = {
       list_id: newListId,

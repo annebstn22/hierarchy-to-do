@@ -1,9 +1,8 @@
 // INPUT BOX FOR CREATING NEW TASKS
-
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function TaskForm({ token, userId, selectedListId, refreshData, setTaskData }) {
+function TaskForm({ token, userId, selectedListId, setTaskData }) {
   const [taskTitle, setTaskTitle] = useState('');
 
   const handleTaskSubmit = (e) => {
@@ -28,8 +27,6 @@ function TaskForm({ token, userId, selectedListId, refreshData, setTaskData }) {
         console.log('New task details:', response.data);
         // Clear the task title after successful submission
         setTaskTitle('');
-        // Refresh task data
-        //refreshData();
         setTaskData((prevData) => ({
           ...prevData,
           tasks: [...prevData.tasks, response.data.task], 

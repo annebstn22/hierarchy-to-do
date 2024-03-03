@@ -5,6 +5,7 @@ import axios from "axios";
 
 function Header(props) {
 
+  // Function to log out the user
   function logMeOut() {
     axios({
       method: "POST",

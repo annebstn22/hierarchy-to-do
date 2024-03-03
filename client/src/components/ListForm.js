@@ -15,6 +15,7 @@ const ListForm = ({ token, userId, refreshData }) => {
         user_id: parseInt(localStorage.getItem('user_id')) || null
       };
 
+    // Send the new list to the server
     axios
       .post('/api/lists', newList, {
         headers: {
