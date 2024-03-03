@@ -1,37 +1,137 @@
-.App {
-  text-align: center;
+
+
+body{
+  background-color: #fff;
+  color: #e82628;
+  font-family: roboto, sans-serif;
+  font-size: 40px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+*{
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+main{
+  max-width: 600px;
+  margin: 20px auto;
+
 }
 
-.App-header {
-  background-color: #282c34;
+form{
+  border: 3px solid #30313D;
+  border-radius: 10px;
+  padding: 5px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+form input[type="text"]{
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 8px;
+  display: block;
+  width: 100%;
+  font-size: 40px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+  background-color: #fff;
+  color: #e82628;
+  border:0;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 1px;
+  flex-grow: 0.05;
+
+}
+
+div.task{
+  background-color: #fff;
+  border: 3px solid #e82628;
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin-top: 5px;
+  display: flex;
+}
+
+div.list{
+  background-color: #fff;
+  border: 3px solid #e82628;
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin-top: 5px;
+  display: flex;
+}
+
+div.task span{
+  position: relative;
+  flex-grow: 1;
+  vertical-align: middle;
+}
+
+div.list span{
+  position: relative;
+  flex-grow: 1;
+}
+
+div.login span{
+  position: relative;
+  flex-grow: 1;
+
+}
+
+i{
+  color: #e82628;
+  size: auto;
+  font-size: 35px;
+}
+
+/* Unchecked state */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e82628; /* dark border color for the checkbox */
+  background-color: #fff; /* dark background color when unchecked */
+  outline: none;
+  cursor: pointer;
+  margin-right: 15px;
+  border-radius: 4px; /* border-radius for rounded corners */
+}
+
+/* Checked state */
+input[type="checkbox"]:checked {
+  background-color: #e82628; /* dark background color when checked */
+  border-color: #e82628; /* border color for the checkbox when checked */
+}
+
+/* Checkmark styling */
+input[type="checkbox"]:checked::before {
+  display: block;
+  text-align: center;
+  line-height: 20px; /* should match the height of the checkbox */
+  color: #fff; /* color of the checkmark when checked */
+}
+
+button.back i{
+  font-size: 50px;
+}
+
+button.logout i{
+  font-size: 50px;
+}
+
+h1 {
+  margin: 0.5;
+}
+
+div form.login{
+  width: 100%;
+}
+
+div form.login input{
+  font-size: 26.5px;
+  margin: 10;
 }

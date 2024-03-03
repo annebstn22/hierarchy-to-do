@@ -19,8 +19,8 @@ function Header(props) {
 
     return(
         <header className="App-header">
-            <button onClick={logMeOut}> 
-                Logout
+            <button className = "logout" onClick={logMeOut}> 
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </button>
         </header>
     )

@@ -104,19 +104,15 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
 
   return (
     <div>
-      <ul>
         {tasks.map((task) => (
-          <div className={'task ' + (task.done ? 'done' : '')} key={'task ' + task.task_id}>
-            <input
-              type="checkbox"
-              checked={task.done}
-              onChange={() => handleCheckboxChange(task.task_id, task.done)}
-            />
-
-            <li>
-              {task.done ? ' (Completed) ' : ''}
-
+          <div className="task" key={'task ' + task.task_id}>
+              <input
+                type="checkbox"
+                checked={task.done}
+                onChange={() => handleCheckboxChange(task.task_id, task.done)}
+              />
               {editingTaskId === task.task_id ? (
+                <div>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -126,12 +122,13 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
                   <input type="text" name="title" defaultValue={task.task_title} />
                   <button type="submit">Save</button>
                 </form>
+                </div>
               ) : (
                 <>
-                  <div className="task-title" onClick={() => onClickTask(task.task_id)}>
-                    <span>{task.task_title}</span>
-                  </div>
-                  <button onClick={() => setEditingTaskId(task.task_id)}>Edit</button>
+                  <span className="task-title" onClick={() => onClickTask(task.task_id)}>{task.task_title}</span>
+                  <button onClick={() => setEditingTaskId(task.task_id)}>
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
                 </>
               )}
 
@@ -147,14 +144,14 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
                   ))}
                 </select>
               ) : (
-                <span></span>
+                <div></div>
               )}
 
-              <button onClick={() => handleDeleteTask(task.task_id)}>x</button>
-            </li>
+              <button onClick={() => handleDeleteTask(task.task_id)}>
+                <i class="fa-solid fa-trash"></i>
+              </button>
           </div>
         ))}
-      </ul>
     </div>
   );
 };

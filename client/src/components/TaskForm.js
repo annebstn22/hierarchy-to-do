@@ -41,14 +41,15 @@ function TaskForm({ token, userId, selectedListId, refreshData, setTaskData }) {
   return (
     <div>
       <form onSubmit={handleTaskSubmit}>
-        <label>
+          <button type="submit">
+            <i class="fa-solid fa-plus"></i>
+          </button>
           <input
             type="text"
             value={taskTitle}
+            placeholder="Your next task..."
             onChange={(e) => setTaskTitle(e.target.value)}
           />
-        </label>
-        <button type="submit">+</button>
       </form>
     </div>
   );

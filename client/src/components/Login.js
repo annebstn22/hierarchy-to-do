@@ -43,7 +43,7 @@ function Login(props) {
       )}
 
     return (
-      <div>
+      <div className='Login'>
         <h1>Login</h1>
           <form className="login">
             <input onChange={handleChange} 
@@ -58,9 +58,10 @@ function Login(props) {
                   name="password" 
                   placeholder="Password" 
                   value={loginForm.password} />
-
-          <button onClick={logMeIn}>Submit</button>
         </form>
+        <button onClick={logMeIn}>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
       </div>
     );
 }

@@ -35,16 +35,16 @@ const ListForm = ({ token, userId, refreshData }) => {
   return (
     <div>
         <form onSubmit={handleListSubmit}>
-            <label>
-                <input
-                    type="text"
-                    value={listName}
-                    onChange={(e) => setListName(e.target.value)}
-                    placeholder="New list"
-                    required
-                />
-            </label>
-            <button type="submit">+</button>
+          <button type="submit">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+          <input
+              type="text"
+              value={listName}
+              onChange={(e) => setListName(e.target.value)}
+              placeholder="New list"
+              required
+          />
         </form>
     </div>
   );

@@ -143,16 +143,18 @@ function Tasks(props) {
 
   return (
     <div>
-      <button onClick={handleBackButton}>Back</button>
+      <button className= "back" onClick={handleBackButton}>
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
       <div className="Task">
         {/* Display list names */}
         {view === 'list' && (
           <div>
-            <p>Lists:</p>
+            <h1>Lists</h1>
             <ListForm token={props.token} userId={userId} refreshData={refreshData} />
-            <ul>
+            <div>
               {taskData.lists.map((list) => (
-                <li key={list.list_id}>
+                <div className = "list" key={list.list_id}>
                   {editListId === list.list_id ? (
                     <form
                       onSubmit={(e) => {
@@ -169,16 +171,18 @@ function Tasks(props) {
                     </form>
                   ) : (
                     <>
-                      <div className="list-title" onClick={() => onClickList(list.list_id)}>
-                        <span>{list.list_name}</span>
-                      </div>
-                      <button onClick={() => setEditListId(list.list_id)}>Edit</button>
+                      <span className="list-title" onClick={() => onClickList(list.list_id)}>{list.list_name}</span>
+                      <button onClick={() => setEditListId(list.list_id)}>
+                        <i class="fa-regular fa-pen-to-square"></i>
+                      </button>
                     </>
                   )}
-                  <button onClick={() => handleDeleteList(list.list_id)}>x</button>
-                </li>
+                  <button onClick={() => handleDeleteList(list.list_id)}>
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
               ))}
-            </ul>
+            </div>
 
           </div>
         )}
@@ -186,7 +190,7 @@ function Tasks(props) {
         {/* Display highest level tasks */}
         {view === 'tasks' && (
           <div>
-            <p>Tasks</p>
+            <h1>Tasks</h1>
             <TaskForm
               token={props.token}
               userId={userId}
@@ -209,7 +213,7 @@ function Tasks(props) {
         {/* Display subtasks */}
         {view === 'subtasks' && (
           <div>
-            <p>Subtasks:</p>
+            <h1>Subtasks</h1>
             <TaskForm
               token={props.token}
               userId={userId}
@@ -229,6 +233,6 @@ function Tasks(props) {
         )}
         </div>
       </div>
-      );}
+    );}
 
-      export default Tasks;
+    export default Tasks;

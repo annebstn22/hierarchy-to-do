@@ -10,7 +10,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="App">
+      <main className="App">
         <Header token={removeToken}/>
         {!token && token!=="" &&token!== undefined?  
         <Login setToken={setToken} />
@@ -21,7 +21,7 @@ function App() {
             </Routes>
           </>
         )}
-      </div>
+      </main>
     </BrowserRouter>
   );
 }
