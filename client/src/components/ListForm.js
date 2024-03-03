@@ -1,3 +1,5 @@
+// INPUT BOX FOR CREATING NEW LISTS
+
 import React, { useState } from 'react';
 import axios from 'axios';
 

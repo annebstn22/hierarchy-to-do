@@ -1,3 +1,6 @@
+// HEADER FOR LOGOUT
+// This component displays the logout button and allows the user to log out of the application.
+
 import axios from "axios";
 
 function Header(props) {

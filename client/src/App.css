@@ -93,26 +93,26 @@ input[type="checkbox"] {
   -moz-appearance: none;
   width: 32px;
   height: 32px;
-  border: 3px solid #e82628; /* dark border color for the checkbox */
-  background-color: #fff; /* dark background color when unchecked */
+  border: 3px solid #e82628; 
+  background-color: #fff; 
   outline: none;
   cursor: pointer;
   margin-right: 15px;
-  border-radius: 4px; /* border-radius for rounded corners */
+  border-radius: 4px;
 }
 
 /* Checked state */
 input[type="checkbox"]:checked {
-  background-color: #e82628; /* dark background color when checked */
-  border-color: #e82628; /* border color for the checkbox when checked */
+  background-color: #e82628; 
+  border-color: #e82628; 
 }
 
 /* Checkmark styling */
 input[type="checkbox"]:checked::before {
   display: block;
   text-align: center;
-  line-height: 20px; /* should match the height of the checkbox */
-  color: #fff; /* color of the checkmark when checked */
+  line-height: 20px; 
+  color: #fff; 
 }
 
 button.back i{

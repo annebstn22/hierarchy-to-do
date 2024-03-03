@@ -1,3 +1,4 @@
+// CUSTOM HOOK TO USE, SAVE AND REMOVE TOKEN FROM LOCAL STORAGE 
 import { useState } from 'react';
 
 function useToken() {

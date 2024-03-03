@@ -18,6 +18,7 @@ function App() {
           <>
             <Routes>
               <Route exact path="/tasks" element={<Tasks token={token} setToken={setToken}/>}></Route>
+              <Route path="/" element={<Tasks token={token} setToken={setToken}/>} />
             </Routes>
           </>
         )}

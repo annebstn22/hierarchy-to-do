@@ -1,3 +1,6 @@
+// MAIN PAGE FOR DISPLAYING TASKS AND LISTS
+// This component displays the list of tasks and lists, and allows the user to add, edit, and delete tasks and lists.
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import TaskList from './TasksList';

@@ -1,4 +1,7 @@
-// TasksList.js
+// DISPLAY A LIST OF TASKS FROM THE DATABASE
+// This component displays each task with a checkbox, edit button, and delete button.
+// It also allows the user to move tasks to different lists.
+
 import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';

@@ -14,7 +14,7 @@ def init_db():
         # Add initial data to the database
         users_data = [
             {"user_id": 1, "email": "user@example.com", "password": "123"},
-            {"user_id": 2, "email": "user2@example.com", "password": "456"}
+            {"user_id": 2, "email": "user2@example.com", "password": "456"},
         ]
 
         lists_data = [

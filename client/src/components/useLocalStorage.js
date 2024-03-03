@@ -1,4 +1,4 @@
-// useLocalStorage.js
+// CUSTOM HOOK FOR LOCAL STORAGE
 import { useState } from 'react';
 
 function useLocalStorage(key, initialValue) {
