@@ -28,9 +28,13 @@ Run `python init_db.py` to reinitialize the database within the *flask-server* f
 
 To run the app, you can in the root directory:
 
+### METHOD #1:
+
 ### `./run_app.sh`
 
 OR 
+
+### METHOD #2:
 
 ### `python3 -m venv venv`
 ### `source venv/bin/activate`
