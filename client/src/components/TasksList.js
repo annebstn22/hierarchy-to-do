@@ -34,6 +34,7 @@ const TaskList = ({ tasks, lists, onClickTask, token, setTaskData }) => {
             task.task_id === taskId ? { ...task, done: newData.done } : task
           ),
         }));
+        console.log('Task updated');
       })
       .catch((error) => {
         console.error('Error updating task', error);

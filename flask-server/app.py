@@ -168,6 +168,8 @@ def update_task(task_id):
 
         # Update list_id for all subtasks
         update_subtasks_list_id(task_id, new_list_id)
+    
+    db.session.commit()
 
     return jsonify({"message": "Task updated successfully", "task": task.to_dict()}), 200
 

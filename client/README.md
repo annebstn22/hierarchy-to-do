@@ -1,70 +1,77 @@
-# Getting Started with Create React App
+# Project Overview
+Welcome to the To-Do App! This project is a hierarchical to-do list application designed to help you manage your tasks efficiently. The app allows you to organize your tasks in a structured manner, making it easy to prioritize and track your progress.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Features
+* Hierarchical Structure: Create a hierarchy of tasks to better organize your to-do list.
+* User-Friendly Interface: The app provides a clean and intuitive user interface for an optimal user experience.
+* Backend Flask Server: The backend, built with Flask, handles data storage, retrieval, and business logic.
 
-## Available Scripts
+# Frontend
+The frontend code is located in the *client* folder. Inside the *client/src* directory, you'll find the *components* folder, which contains all the React components used in the app. Each component is organized for clarity and modularity.
 
-In the project directory, you can run:
+# Backend
+The backend code is situated in the flask-server folder. Key files include:
 
+* app.py: This file contains the Flask application, where routes and API endpoints are defined.
+
+* models.py: This file contains the database models. These files define the structure of the data stored in the application.
+
+* init_db.py: Use this file to set up and initialize the database with the necessary tables and initial data. 
+
+Run `python init_db.py` to reinitialize the database within the *flask-server* file
+
+# Loom App Explanation
+
+[Loom link]()
+
+# Running the App
+
+To run the app, you can
+
+### `python3 -m venv venv`
+### `source venv/bin/activate`
+### `pip3 install -r requirements.txt`
+### `cd flask-server`
+### `flask run`
+
+In a new terminal, launch the frontend
+
+### `cd client`
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+# AI Statement: 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+I used ChatGPT and Git Copilot to generate code, to help debug error codes, to figure out why my code isn't working as I'd like it to, and to help generate the CSS for my app design. I prioritized incorporating what I learned from documentation and tutorials I found online. Once I understood and incorporated it, I used ChatGPT to replicate the code for other features (e.g., PUT requests)
 
-### `npm run build`
+# HC and LOs:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**#breakitdown**: Organized the app into modular components, beginning with a basic list structure. and subsequently integrating hierarchical features followed by the systematic addition of checkboxes, editing, deletion, and task moving. Implemented a gradual transition from hardcoded JSON data to a database, such that only one new element was integrated at a time for easy bug identification.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**#cs110_CodeReadability**: Structured React components to enhance HTML code readability, incorporating meaningful comments to outline each component's purpose. Maintained consistent whitespace conventions for improved code readability. Integrated error and 'success' messages within the code to assist in debugging, enabling quick identification of issues related to HTTP requests and data integrity.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**#cs162_separationofconcerns**: Created dedicated React components, like TaskForm for new task addition and useToken for token management. Ensured a clear division between frontend (React) and backend (Flask), while organizing backend functionality into separate files for database models (structure) and data initialization.
 
-### `npm run eject`
+**#cs162_webstandards**: Adhered to web standards by adopting modern React practices, utilizing hooks instead of classes for component development. Implemented HTTP requests through axios, a standard promise-based HTTP library. Integrated Flask-SQLAlchemy with SQLAlchemy for database functionality. Established secure authentication using Flask-JWT, incorporating @jwt_required() decorators in the backend to mandate token access for specific pages. Ensured streamlined HTML structure by assigning classNames and minimizing the necessity for redundant CSS through nested components.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# References:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Login authentication
+Abdulsalam, F. (2022, January 20). How to connect Flask to ReactJs. DEV Community. https://dev.to/nagatodev/how-to-connect-flask-to-reactjs-1k8i
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Abdulsalam, F. (2022b, January 28). How to add login authentication to a Flask and React application. DEV Community. https://dev.to/nagatodev/how-to-add-login-authentication-to-a-flask-and-react-application-23i7
 
-## Learn More
+### Create React Flask Project Setup
+Arpan Neupane. (2021, June 26). How to create a Flask + React Project | Python Backend + React Frontend [Video]. YouTube. https://www.youtube.com/watch?v=7LNl2JlZKHA
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Create useLocalStorage custom hook
+Dev, C. (2023, December 20). Understanding React State Management: Exploring UseState and UseLocalStorage Hooks | Medium. Medium. https://medium.com/@chesko.dev/usestate-vs-uselocalstorage-a1dc756ddd95#:~:text=While%20useState%20is%20effective%20for,site%2C%20the%20state%20will%20persist.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Create an SQLite Database with SQLAlchemy
+Pal, S. (2023, August 6). How to Create and Connect an SQLite Database with Flask App using Python. GeekPython - Python Programming Tutorials. https://geekpython.in/connect-sqlite-database-with-flask-app
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### App Design Inspiration:
+Coding With Dawid. (2022, November 5). Build a Todo App with React.js | Beginner React Project using hooks [Video]. YouTube. https://www.youtube.com/watch?v=QdTHUv79EZc

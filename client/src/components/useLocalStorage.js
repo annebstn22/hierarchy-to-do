@@ -1,4 +1,4 @@
-// CUSTOM HOOK FOR LOCAL STORAGE
+// CUSTOM HOOK FOR LOCAL STORAGE (Dev, 2023)
 import { useState } from 'react';
 
 function useLocalStorage(key, initialValue) {
